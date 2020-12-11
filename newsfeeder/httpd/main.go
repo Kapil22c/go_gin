@@ -18,3 +18,6 @@ func main() {
 	r.Run()
 
 }
+
+// await fetch('/newsfeed', { method:'POST', headers:{'content-type': 'application/json'}, body: JSON.stringify({ title:'frfffv', post:'gfdf'}) })
+// for checking.. APIs
