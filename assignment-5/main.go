@@ -64,22 +64,45 @@ func main() {
 		ctx.HTML(http.StatusOK, "add.html", gin.H{"title": "Add player!!"})
 	})
 
-	r.GET("/submit", func(ctx *gin.Context) {
+	r.POST("/insert", func(ctx *gin.Context) {
 		//render only file, must full name with extension
 		var name, role string
 		var matches, age string
-		name = ctx.Query("name")
-		role = ctx.Query("role")
-		matches = ctx.Query("matches")
-		age = ctx.Query("age")
+		name = ctx.Request.FormValue("name")
+		role = ctx.Request.FormValue("role")
+		matches = ctx.Request.FormValue("matches")
+		age = ctx.Request.FormValue("age")
 
 		db := dbConn()
-		insForm, err := db.Prepare("INSERT INTO player(name, role, matches, age) VALUES(?,?,?,?)")
+		insForm, err := db.Prepare("INSERT INTO player (name, role, matches, age) VALUES(?,?,?,?)")
 		if err != nil {
 			panic(err.Error())
 		}
 		insForm.Exec(name, role, matches, age)
-		ctx.HTML(http.StatusOK, "page.html", gin.H{"title": "Player"})
+		// ctx.HTML(http.StatusOK, "updated.html", gin.H{"title": "Player"})
+
+		selDB, err := db.Query("SELECT * FROM player ORDER BY id DESC")
+		if err != nil {
+			panic(err.Error())
+		}
+		player := Player{}
+		res := []Player{}
+		for selDB.Next() {
+			var id, matches, age int
+			var name, role string
+			err = selDB.Scan(&id, &name, &role, &matches, &age)
+			if err != nil {
+				panic(err.Error())
+			}
+			player.Id = id
+			player.Name = name
+			player.Role = role
+			player.Matches = matches
+			player.Age = age
+			res = append(res, player)
+		}
+		//var a = "hello words"
+		ctx.HTML(http.StatusOK, "page.html", gin.H{"title": "Home Page!!", "a": res})
 	})
 
 	r.Run(":8080")
