@@ -33,7 +33,7 @@ func main() {
 	r.LoadHTMLGlob("templates/*")
 
 	r.GET("/", func(ctx *gin.Context) {
-		//render only file, must full name with extension
+
 		db := dbConn()
 		selDB, err := db.Query("SELECT * FROM player ORDER BY id DESC")
 		if err != nil {
@@ -60,12 +60,10 @@ func main() {
 	})
 
 	r.GET("/add", func(ctx *gin.Context) {
-		//render only file, must full name with extension
 		ctx.HTML(http.StatusOK, "add.html", gin.H{"title": "Add player!!"})
 	})
 
 	r.POST("/insert", func(ctx *gin.Context) {
-		//render only file, must full name with extension
 		var name, role string
 		var matches, age string
 		name = ctx.Request.FormValue("name")
@@ -79,8 +77,7 @@ func main() {
 			panic(err.Error())
 		}
 		insForm.Exec(name, role, matches, age)
-		// ctx.HTML(http.StatusOK, "updated.html", gin.H{"title": "Player"})
-
+		//
 		selDB, err := db.Query("SELECT * FROM player ORDER BY id DESC")
 		if err != nil {
 			panic(err.Error())
