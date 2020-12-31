@@ -1,3 +1,6 @@
+// this is practiced program
+//assignment is crud_gin.go anf crud_gorilla.go
+
 package main
 
 import (
@@ -13,8 +16,8 @@ import (
 type student struct {
 	Id     int    `json:"id"`
 	Name   string `json:"name"`
-	Rollno int    `json:"rollno"`
-	Age    int    `json:"age"`
+	Rollno string `json:"rollno"`
+	Age    string `json:"age"`
 }
 
 func dbConn() (db *sql.DB) {
@@ -41,11 +44,12 @@ func main() {
 				"age":    s.Age,
 			})
 			db := dbConn()
-			insert, err := db.Prepare("INSERT INTO student(name, rollno, age) VALUES(?,?,?)")
+			insert, err := db.Query("INSERT INTO student(name, rollno, age) VALUES(?,?,?)", s.Name, s.Rollno, s.Age)
 			if err != nil {
 				panic(err.Error())
 			}
-			insert.Exec(s.Name, s.Rollno, s.Age)
+			defer insert.Close()
+			// insert.Exec(s.Name, s.Rollno, s.Age)
 			fmt.Printf("name: %s, rollno: %s, age: %s", s.Name, s.Rollno, s.Age)
 		}
 	})
@@ -73,8 +77,8 @@ func main() {
 		if err != nil {
 			panic(err.Error())
 		}
-		var id, rollno, age int
-		var name string
+		var id int
+		var name, rollno, age string
 		for selDB.Next() {
 			err = selDB.Scan(&id, &name, &rollno, &age)
 			ctx.JSON(200, gin.H{

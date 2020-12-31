@@ -16,8 +16,8 @@ type Todo struct {
 	Title     string    `json:"title"`
 	Body      string    `json:"body"`
 	Completed string    `json:"completed"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	// CreatedAt time.Time `json:"created_at"`
+	// UpdatedAt time.Time `json:"updated_at"`
 }
 
 // Create User Table
@@ -75,8 +75,8 @@ func CreateTodo(c *gin.Context) {
 		Title:     title,
 		Body:      body,
 		Completed: completed,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		// CreatedAt: time.Now(),
+		// UpdatedAt: time.Now(),
 	})
 	if insertError != nil {
 		log.Printf("Error while inserting new todo into db, Reason: %v\n", insertError)
